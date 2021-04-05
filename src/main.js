@@ -1,7 +1,15 @@
-// if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //移动端
-//   //TODO 移动端
-//   console.log(1);
-// }
+
+let isIOS = false;
+let isAndroid  = false
+
+if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) { //移动端
+  isIOS = true
+  $('#searchForm').attr('target','_blank')
+
+}
+if (/(Android)/i.test(navigator.userAgent)) { //移动端
+  isAndroid = true
+}
 
 const $siteList = $('.siteList')
 const $lastLi = $siteList.find('li.last')
@@ -23,7 +31,9 @@ const hashMap = xObject || [
 ]
 let lastSelected = localStorage.getItem('lastSelected')
 lastSelected = lastSelected || 1
+// 防止删除后越界
 lastSelected= lastSelected > hashMap.length ? 0 : lastSelected
+
 
 const simplifyUrl = (url) => {
   return url.replace('https://', '')
@@ -36,7 +46,6 @@ const render = () => {
   $siteList.find('li:not(.last)').remove()
   hashMap.forEach((node, index) => {
     const active = (index+1 === parseInt(lastSelected)) ? 'active': ''
-    console.log(index+'active='+active);
     const $li = $(`<li>
       <div class="site ${active}">
         <div class="logo">${node.logo}</div>
@@ -50,6 +59,7 @@ const render = () => {
     </li>`).insertBefore($lastLi)
     $li.on('click', () => {
       openOrSearchWith(node,index)
+
     })
     $li.on('click', '.close', (e) => {
       e.stopPropagation() // 阻止冒泡
@@ -57,24 +67,24 @@ const render = () => {
       render()
     })
   })
+  openOrSearchWith(hashMap[lastSelected-1],lastSelected-1)
 }
 
 function openOrSearchWith(sideItem,index){
-
+  console.log(index )
+  console.log(sideItem )
 
   let selector = `.siteList :nth-child(${index+1}) .site`
   $('.siteList .active').removeClass('active')
   $(selector).addClass('active')
   lastSelected = index+1
-
+  localStorage.setItem('lastSelected',lastSelected)
 
   if(sideItem.queryPath &&sideItem.queryKey) {
     // todo 使用当前url 搜索
     $('#searchForm').attr('action', sideItem.url + sideItem.queryPath)
     $('#searchInput').attr('name',sideItem.queryKey)
 
-  }else {
-    window.open(sideItem.url)
   }
 
 }

@@ -118,10 +118,20 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"epB2":[function(require,module,exports) {
-// if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //移动端
-//   //TODO 移动端
-//   console.log(1);
-// }
+var isIOS = false;
+var isAndroid = false;
+
+if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+  //移动端
+  isIOS = true;
+  $('#searchForm').attr('target', '_blank');
+}
+
+if (/(Android)/i.test(navigator.userAgent)) {
+  //移动端
+  isAndroid = true;
+}
+
 var $siteList = $('.siteList');
 var $lastLi = $siteList.find('li.last');
 localStorage.setItem('x', null);
@@ -161,7 +171,8 @@ var hashMap = xObject || [{
 // https://s.weibo.com/weibo?q=fuck
 ];
 var lastSelected = localStorage.getItem('lastSelected');
-lastSelected = lastSelected || 1;
+lastSelected = lastSelected || 1; // 防止删除后越界
+
 lastSelected = lastSelected > hashMap.length ? 0 : lastSelected;
 
 var simplifyUrl = function simplifyUrl(url) {
@@ -172,7 +183,6 @@ var render = function render() {
   $siteList.find('li:not(.last)').remove();
   hashMap.forEach(function (node, index) {
     var active = index + 1 === parseInt(lastSelected) ? 'active' : '';
-    console.log(index + 'active=' + active);
     var $li = $("<li>\n      <div class=\"site ".concat(active, "\">\n        <div class=\"logo\">").concat(node.logo, "</div>\n        <div class=\"link \">").concat(simplifyUrl(node.url), "</div>\n        <div class=\"close\">\n          <svg class=\"icon\">\n            <use xlink:href=\"#icon-close\"></use>\n          </svg>\n        </div>\n      </div>\n    </li>")).insertBefore($lastLi);
     $li.on('click', function () {
       openOrSearchWith(node, index);
@@ -184,20 +194,22 @@ var render = function render() {
       render();
     });
   });
+  openOrSearchWith(hashMap[lastSelected - 1], lastSelected - 1);
 };
 
 function openOrSearchWith(sideItem, index) {
+  console.log(index);
+  console.log(sideItem);
   var selector = ".siteList :nth-child(".concat(index + 1, ") .site");
   $('.siteList .active').removeClass('active');
   $(selector).addClass('active');
   lastSelected = index + 1;
+  localStorage.setItem('lastSelected', lastSelected);
 
   if (sideItem.queryPath && sideItem.queryKey) {
     // todo 使用当前url 搜索
     $('#searchForm').attr('action', sideItem.url + sideItem.queryPath);
     $('#searchInput').attr('name', sideItem.queryKey);
-  } else {
-    window.open(sideItem.url);
   }
 }
 
@@ -250,4 +262,4 @@ $(document).on('keypress', function (e) {
   }
 });
 },{}]},{},["epB2"], null)
-//# sourceMappingURL=main.b1d60960.js.map
+//# sourceMappingURL=main.379f833e.js.map

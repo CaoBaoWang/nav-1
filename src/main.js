@@ -24,8 +24,13 @@ const hashMap = xObject || [
   {logo: 'B', url: 'https://search.bilibili.com',queryPath:'/all?',queryKey:'keyword'},
   {logo: 'D', url: 'https://www.douban.com',queryPath:'/search?',queryKey:'q'},
   {logo: 'Y', url: 'https://www.youtube.com',queryPath:'/results?',queryKey:'search_query'},
-  // {logo: 'G', url: 'https://www.github.com',queryPath:'/search?',queryKey:'q'},
+  {logo: 'G', url: 'https://www.github.com',queryPath:'/search?',queryKey:'q'},
+  {logo: 'M', url: 'https://developer.mozilla.org',queryPath:'/search?',queryKey:'q'},
+  {logo: 'T', url: 'https://s.taobao.com',queryPath:'/search?',queryKey:'q'},
+  {logo: 'W', url: 'https://zh.wikipedia.org',queryPath:'/wiki/',queryKey:''},
+
   // https://s.weibo.com/weibo?q=fuck
+
 
 
 ]
@@ -80,7 +85,7 @@ function openOrSearchWith(sideItem,index){
   lastSelected = index+1
   localStorage.setItem('lastSelected',lastSelected)
 
-  if(sideItem.queryPath &&sideItem.queryKey) {
+  if(sideItem.queryPath ) {
     // todo 使用当前url 搜索
     $('#searchForm').attr('action', sideItem.url + sideItem.queryPath)
     $('#searchInput').attr('name',sideItem.queryKey)
@@ -122,6 +127,14 @@ $('.add-site-wrapper').on('click',function (e) {
   $(e.currentTarget).removeClass('active')
 })
 
+$('#searchForm').on('submit',(e)=>{
+  const action = $('#searchForm').attr('action')
+  if(action.indexOf('wikipedia')>-1) {
+    e.preventDefault()
+    window.location =  action + $('#searchInput').val()
+  }
+})
+
 $(document).on('keypress', (e) => {
   // document.querySelector('#searchInput')
 
@@ -141,3 +154,6 @@ $(document).on('keypress', (e) => {
     }
   }
 })
+
+
+

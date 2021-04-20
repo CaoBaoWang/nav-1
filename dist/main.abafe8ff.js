@@ -167,8 +167,27 @@ var hashMap = xObject || [{
   url: 'https://www.youtube.com',
   queryPath: '/results?',
   queryKey: 'search_query'
-} // {logo: 'G', url: 'https://www.github.com',queryPath:'/search?',queryKey:'q'},
-// https://s.weibo.com/weibo?q=fuck
+}, {
+  logo: 'G',
+  url: 'https://www.github.com',
+  queryPath: '/search?',
+  queryKey: 'q'
+}, {
+  logo: 'M',
+  url: 'https://developer.mozilla.org',
+  queryPath: '/search?',
+  queryKey: 'q'
+}, {
+  logo: 'T',
+  url: 'https://s.taobao.com',
+  queryPath: '/search?',
+  queryKey: 'q'
+}, {
+  logo: 'W',
+  url: 'https://zh.wikipedia.org',
+  queryPath: '/wiki/',
+  queryKey: ''
+} // https://s.weibo.com/weibo?q=fuck
 ];
 var lastSelected = localStorage.getItem('lastSelected');
 lastSelected = lastSelected || 1; // 防止删除后越界
@@ -206,7 +225,7 @@ function openOrSearchWith(sideItem, index) {
   lastSelected = index + 1;
   localStorage.setItem('lastSelected', lastSelected);
 
-  if (sideItem.queryPath && sideItem.queryKey) {
+  if (sideItem.queryPath) {
     // todo 使用当前url 搜索
     $('#searchForm').attr('action', sideItem.url + sideItem.queryPath);
     $('#searchInput').attr('name', sideItem.queryKey);
@@ -241,6 +260,14 @@ $('.add-site-wrapper').on('click', function (e) {
   e.stopPropagation();
   if (e.currentTarget === e.target) $(e.currentTarget).removeClass('active');
 });
+$('#searchForm').on('submit', function (e) {
+  var action = $('#searchForm').attr('action');
+
+  if (action.indexOf('wikipedia') > -1) {
+    e.preventDefault();
+    window.location = action + $('#searchInput').val();
+  }
+});
 $(document).on('keypress', function (e) {
   // document.querySelector('#searchInput')
   if (document.activeElement.id === 'searchInput') {
@@ -262,4 +289,4 @@ $(document).on('keypress', function (e) {
   }
 });
 },{}]},{},["epB2"], null)
-//# sourceMappingURL=main.379f833e.js.map
+//# sourceMappingURL=main.abafe8ff.js.map
